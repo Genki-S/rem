@@ -1,12 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='rem',
     description='Set reminders blazing fast.',
-    version='1.0.1',
+    version='1.0.2',
     install_requires=[
         'parsedatetime'
     ],
+    packages=find_packages(),
     author='Genki Sugimoto',
     author_email='cfhoyuk.reccos.nelg@gmail.com',
     url='http://github.com/Genki-S/rem/',
