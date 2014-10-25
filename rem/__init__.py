@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import re
 import sys
 import time
 from datetime import datetime
@@ -23,7 +24,7 @@ class ReminderAppBase:
       raise
 
    def message(self):
-      return "Reminder \"" + self.reminder.content + "\" on " + self.formatTime(time) + " created."
+      return "Reminder \"" + self.reminder.content + "\" on " + self.formatTime(self.reminder.time) + " created."
 
 class AppleReminder(ReminderAppBase):
    def formatTime(self, time):
@@ -43,10 +44,14 @@ class AppleReminder(ReminderAppBase):
       end run
       """
       p = Popen(['osascript', '-', content, formattedTime], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-      p.communicate(input=script)
-      # TODO: check failures (seeing output of p.communicate())
-      # TODO: create proper Reminder object
-      return Reminder(content, time)
+      output = p.communicate(input=script)[0]
+      if re.match('^reminder id x-apple-reminder:', output):
+         # TODO: create proper Reminder object
+         return Reminder(content, time)
+      else:
+         print 'Reminder could not be created.'
+         print 'Please report it to https://github.com/Genki-S/rem/issues/new'
+         return None
 
 def getReminder():
    p = sys.platform
@@ -54,6 +59,7 @@ def getReminder():
       return AppleReminder()
    else:
       print 'rem can only create Reminder.app reminders for now'
+      print 'Please request other adapters to https://github.com/Genki-S/rem/issues/new'
       raise
 
 def main():
