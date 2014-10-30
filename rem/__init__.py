@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import time
+import platform
 from datetime import datetime
 from subprocess import Popen, PIPE, STDOUT
 import parsedatetime
@@ -28,8 +29,15 @@ class ReminderAppBase:
 
 class AppleReminder(ReminderAppBase):
    def formatTime(self, time):
-      # For OS X 10.9
-      return time.strftime("%m/%d/%Y %I:%M:%S%p")
+      v, _, _ = platform.mac_ver()
+      v = '.'.join(v.split('.')[:2])
+      if v == '10.8':
+         return time.strftime("%d/%m/%Y %H:%M:%S")
+      elif v == '10.9':
+         return time.strftime("%m/%d/%Y %I:%M:%S%p")
+      else:
+         # Unknown version. Whatever format is OK, hope it works.
+         return time.strftime("%d/%m/%Y %H:%M:%S")
 
    def register(self, content, time):
       formattedTime = self.formatTime(time);
@@ -45,7 +53,10 @@ class AppleReminder(ReminderAppBase):
       """
       p = Popen(['osascript', '-', content, formattedTime], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
       output = p.communicate(input=script)[0]
-      if re.match('^reminder id x-apple-reminder:', output):
+      # successfuul output format:
+      #   10.9 => 'reminder id x-apple-reminder:...'
+      #   10.8 => 'reminder id ...'
+      if re.match('^reminder id', output):
          # TODO: create proper Reminder object
          return Reminder(content, time)
       else:

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='rem',
     description='Set reminders blazing fast.',
-    version='1.0.2',
+    version='1.0.3',
     install_requires=[
         'parsedatetime'
     ],
