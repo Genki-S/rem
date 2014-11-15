@@ -35,7 +35,7 @@ class AppleReminder(ReminderAppBase):
       if v == '10.8':
          return time.strftime("%d/%m/%Y %H:%M:%S")
       elif v == '10.9':
-         return time.strftime("%d/%m/%Y %I:%M:%S%p")
+         return time.strftime("%d/%m/%Y %H:%M:%S")
       else:
          # Unknown version. Whatever format is OK, hope it works.
          return time.strftime("%d/%m/%Y %H:%M:%S")
