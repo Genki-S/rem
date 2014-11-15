@@ -31,10 +31,11 @@ class AppleReminder(ReminderAppBase):
    def formatTime(self, time):
       v, _, _ = platform.mac_ver()
       v = '.'.join(v.split('.')[:2])
+      # TODO: does time format really depend on versions?
       if v == '10.8':
          return time.strftime("%d/%m/%Y %H:%M:%S")
       elif v == '10.9':
-         return time.strftime("%m/%d/%Y %I:%M:%S%p")
+         return time.strftime("%d/%m/%Y %I:%M:%S%p")
       else:
          # Unknown version. Whatever format is OK, hope it works.
          return time.strftime("%d/%m/%Y %H:%M:%S")
